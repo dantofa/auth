@@ -1,0 +1,15 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.18.4/.schema/devbox.schema.json",
+  "include": ["github:dantofa/platform?dir=devbox"],
+  "env": {
+    "CLAUDE_CONFIG_DIR": "$DEVBOX_PROJECT_ROOT/.claude",
+    "BWS_PROJECT_ID": "8adeb984-2d51-4701-bd80-b3a3018260ea",
+    "BWS_ORGANIZATION_ID": "ae067a82-b49c-4ab3-80a8-af2401187fc1"
+  },
+  "aliases": {},
+  "packages": [],
+  "shell": {
+    "init_hook": [],
+    "scripts": {}
+  }
+}

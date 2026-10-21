@@ -1,0 +1,33 @@
+{
+  "lockfile_version": "1",
+  "packages": {
+    "github:NixOS/nixpkgs/nixpkgs-unstable": {
+      "last_modified": "2026-10-16T02:15:57Z",
+      "resolved": "github:NixOS/nixpkgs/f20cd90e28fe0403873f473b29e42662cd86e8c4?lastModified=1792116957&narHash=sha256-EjZqHKObBfIOeHZnMRVV87HB3pPq%2FWBkmRJWyFxmZu8%3D"
+    },
+    "github:dantofa/platform#cluster-just": {
+      "last_modified": "2026-10-20T21:36:43Z",
+      "resolved": "github:dantofa/platform/c5127c366fd87587a17620acea422035abec3c0e?lastModified=1792532203&narHash=sha256-J3vc8LWWL3Z28fUKQ%2Fa0z9rC1%2FHzsDGsajEPiyCNZF8%3D#cluster-just"
+    },
+    "github:dantofa/platform#cluster-toolchain": {
+      "last_modified": "2026-10-20T21:36:43Z",
+      "resolved": "github:dantofa/platform/c5127c366fd87587a17620acea422035abec3c0e?lastModified=1792532203&narHash=sha256-J3vc8LWWL3Z28fUKQ%2Fa0z9rC1%2FHzsDGsajEPiyCNZF8%3D#cluster-toolchain"
+    },
+    "github:dantofa/platform#default": {
+      "last_modified": "2026-10-20T21:36:43Z",
+      "resolved": "github:dantofa/platform/c5127c366fd87587a17620acea422035abec3c0e?lastModified=1792532203&narHash=sha256-J3vc8LWWL3Z28fUKQ%2Fa0z9rC1%2FHzsDGsajEPiyCNZF8%3D#default"
+    },
+    "github:dantofa/platform#ensure-justfile": {
+      "last_modified": "2026-10-20T21:36:43Z",
+      "resolved": "github:dantofa/platform/c5127c366fd87587a17620acea422035abec3c0e?lastModified=1792532203&narHash=sha256-J3vc8LWWL3Z28fUKQ%2Fa0z9rC1%2FHzsDGsajEPiyCNZF8%3D#ensure-justfile"
+    },
+    "github:dantofa/platform#skills": {
+      "last_modified": "2026-10-20T21:36:43Z",
+      "resolved": "github:dantofa/platform/c5127c366fd87587a17620acea422035abec3c0e?lastModified=1792532203&narHash=sha256-J3vc8LWWL3Z28fUKQ%2Fa0z9rC1%2FHzsDGsajEPiyCNZF8%3D#skills"
+    },
+    "github:dantofa/platform#trivyignore-base": {
+      "last_modified": "2026-10-20T21:36:43Z",
+      "resolved": "github:dantofa/platform/c5127c366fd87587a17620acea422035abec3c0e?lastModified=1792532203&narHash=sha256-J3vc8LWWL3Z28fUKQ%2Fa0z9rC1%2FHzsDGsajEPiyCNZF8%3D#trivyignore-base"
+    }
+  }
+}

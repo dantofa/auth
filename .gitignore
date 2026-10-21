@@ -1,0 +1,5 @@
+.kubeconfig
+.local.pem
+.just/
+.devbox/
+.claude/skills/dantofa-platform/
