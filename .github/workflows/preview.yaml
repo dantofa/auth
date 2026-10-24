@@ -1,0 +1,83 @@
+# Requires repo secrets DIGITALOCEAN_ACCESS_TOKEN and BWS_ACCESS_TOKEN (the
+# Bitwarden project/org IDs come from devbox.json). Fork PRs are skipped: they get
+# no secrets, and their branch is not in this repo for Flux to pull.
+name: preview
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+
+# One run per PR at a time, never cancelled midway: an interrupted create or
+# delete leaves billed infrastructure in an unknown state.
+concurrency:
+  group: preview-${{ github.event.number }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  DOKS_CLUSTER: auth-pr${{ github.event.number }}
+  DOKS_BASE_DOMAIN: preview.dantofa.dev
+  BASE_DOMAIN: preview.dantofa.dev
+  KUBECONFIG: ${{ github.workspace }}/.kubeconfig
+  DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+  BWS_ACCESS_TOKEN: ${{ secrets.BWS_ACCESS_TOKEN }}
+
+jobs:
+  deploy:
+    if: >-
+      github.event.action != 'closed' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    environment:
+      name: preview
+      url: https://auth${{ github.event.number }}.preview.dantofa.dev
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: jetify-com/devbox-install-action@8c6a66ed6273138b1915457069de78cb52fe3bd7 # v0.15.0
+        with:
+          devbox-version: 0.18.4
+          enable-cache: true
+
+      - name: Create cluster
+        run: devbox run -- bash -c 'just cluster doks connect || just cluster doks create'
+      # Idempotent, so it also re-applies the platform on every push.
+      - name: Bootstrap platform
+        run: devbox run -- just cluster doks bootstrap --env preview
+      - name: Connect
+        run: devbox run -- just cluster doks connect
+      - name: Platform health
+        run: devbox run -- just cluster verify health
+
+      - name: Deploy Zitadel
+        run: devbox run -- just deploy-doks ${{ github.event.number }}
+      - name: Verify deployment
+        env:
+          # The cluster pulls the PR branch head, not the merge commit checked out here.
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha }}
+        run: devbox run -- just verify ${{ github.event.number }}
+      - name: Image scan gate
+        run: devbox run -- just cluster verify image-scan
+
+      - name: Debug snapshot
+        if: failure()
+        run: devbox run -- just cluster debug
+
+  teardown:
+    if: >-
+      github.event.action == 'closed' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: jetify-com/devbox-install-action@8c6a66ed6273138b1915457069de78cb52fe3bd7 # v0.15.0
+        with:
+          devbox-version: 0.18.4
+          enable-cache: true
+      # Graceful: drains the cluster's DNS records (auth<N>.preview.dantofa.dev)
+      # before destroying it. Idempotent, so a PR that never deployed is fine.
+      - name: Delete cluster
+        run: devbox run -- just cluster doks delete

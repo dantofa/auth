@@ -1,8 +1,12 @@
 ---
-# Zitadel on its own host, auth.${base_domain}, rather than a path on the
+# Zitadel on its own host, <auth_host>.${base_domain}, rather than a path on the
 # base_domain: Zitadel derives every issuer/redirect URL from ExternalDomain and
 # serves its API, console and OIDC endpoints from the host root, so it cannot sit
 # under a path prefix.
+#
+# auth_host defaults to `auth`. A pull-request deploy sets it to auth<pr> (via the
+# reconcile root's postBuild.substitute): each PR runs on its own cluster, but they
+# all publish DNS into the same Cloudflare zone under one base_domain.
 #
 # Note: on a cluster whose base_domain is already a subdomain (local.dantofa.dev,
 # preview.dantofa.dev) this host is two levels under the zone apex. Locally the
@@ -19,7 +23,7 @@ metadata:
   name: zitadel
 spec:
   rules:
-    - host: auth.${base_domain}
+    - host: ${auth_host:=auth}.${base_domain}
       http:
         paths:
           # The v2 login UI is a separate Next.js app.

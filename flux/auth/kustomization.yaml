@@ -1,5 +1,5 @@
 ---
-# Zitadel (identity provider) at auth.${base_domain}. Instantiated from the
+# Zitadel (identity provider) at <auth_host>.${base_domain}. Instantiated from the
 # platform's tenant-namespace template (quota, limit defaults, tenant isolation),
 # plus a CloudNativePG database, ESO-managed secrets, and the Zitadel HelmRelease.
 apiVersion: kustomize.config.k8s.io/v1beta1

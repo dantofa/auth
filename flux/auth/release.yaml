@@ -1,9 +1,9 @@
 ---
-# Zitadel (API + console) and its v2 login UI. Served at https://auth.${base_domain}
+# Zitadel (API + console) and its v2 login UI. Served at https://<auth_host>.${base_domain}
 # by ingress.yaml; TLS terminates at the ingress/edge, so Zitadel itself runs plain
 # h2c with ExternalSecure on.
 #
-# First admin: zitadel-admin@zitadel.auth.${base_domain}, initial password in the
+# First admin: zitadel-admin@zitadel.<auth_host>.${base_domain}, initial password in the
 # zitadel-admin Secret (key: password); a change is forced on first login.
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -33,7 +33,7 @@ spec:
     zitadel:
       masterkeySecretName: zitadel-masterkey
       configmapConfig:
-        ExternalDomain: auth.${base_domain}
+        ExternalDomain: ${auth_host:=auth}.${base_domain}
         ExternalPort: 443
         ExternalSecure: true
         TLS:
