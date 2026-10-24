@@ -1,0 +1,177 @@
+---
+# Zitadel (API + console) and its v2 login UI. Served at https://<auth_host>.${base_domain}
+# by ingress.yaml; TLS terminates at the ingress/edge, so Zitadel itself runs plain
+# h2c with ExternalSecure on.
+#
+# First admin: zitadel-admin@zitadel.<auth_host>.${base_domain}, initial password in the
+# zitadel-admin Secret (key: password); a change is forced on first login.
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: zitadel
+spec:
+  interval: 10m
+  # The pre-install init/setup hook jobs wait for the database, which CNPG may still
+  # be pulling and bootstrapping on a cold cluster.
+  timeout: 15m
+  chart:
+    spec:
+      chart: zitadel
+      # Exact pin (appVersion v4.19.2).
+      version: "10.3.0"
+      sourceRef:
+        kind: HelmRepository
+        name: zitadel
+      interval: 1h
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    zitadel:
+      masterkeySecretName: zitadel-masterkey
+      configmapConfig:
+        ExternalDomain: ${auth_host:=auth}.${base_domain}
+        ExternalPort: 443
+        ExternalSecure: true
+        TLS:
+          Enabled: false
+        Database:
+          Postgres:
+            Host: zitadel-db-rw.auth.svc
+            Port: 5432
+            Database: zitadel
+            User:
+              SSL:
+                Mode: verify-full
+                RootCert: /db-ca/ca.crt
+        FirstInstance:
+          Org:
+            Name: dantofa
+            Human:
+              UserName: zitadel-admin
+              PasswordChangeRequired: true
+        # Traces + metrics as OTLP to the platform's Alloy receiver, which forwards
+        # traces to Tempo and metrics to Prometheus. Logs go to stdout (Alloy tails them).
+        Instrumentation:
+          ServiceName: zitadel
+          Trace:
+            Exporter:
+              Type: grpc
+              Endpoint: k8s-monitoring-alloy-receiver.monitoring.svc.cluster.local:4317
+              Insecure: true
+          Metric:
+            Exporter:
+              Type: grpc
+              Endpoint: k8s-monitoring-alloy-receiver.monitoring.svc.cluster.local:4317
+              Insecure: true
+
+    # Applied to the Zitadel Deployment and the init/setup Jobs alike.
+    env:
+      - name: ZITADEL_DATABASE_POSTGRES_USER_USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: zitadel-db-app
+            key: username
+      - name: ZITADEL_DATABASE_POSTGRES_USER_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: zitadel-db-app
+            key: password
+      - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: zitadel-admin
+            key: password
+
+    # Mount only ca.crt from CNPG's CA Secret (it also holds the CA private key).
+    extraVolumes:
+      - name: db-ca
+        secret:
+          secretName: zitadel-db-ca
+          items:
+            - key: ca.crt
+              path: ca.crt
+    extraVolumeMounts:
+      - name: db-ca
+        mountPath: /db-ca
+        readOnly: true
+
+    # CNPG already created the database and role; only create Zitadel's schema.
+    initJob:
+      command: zitadel
+      activeDeadlineSeconds: 900
+      resources:
+        requests:
+          cpu: 50m
+          memory: 128Mi
+        limits:
+          memory: 512Mi
+    setupJob:
+      activeDeadlineSeconds: 900
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          memory: 1Gi
+    cleanupJob:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          memory: 128Mi
+
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 1Gi
+
+    # Restricted Pod Security (enforced by the platform's Kyverno baseline on tenant
+    # namespaces). The login UI falls back to these too.
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      fsGroup: 1000
+      seccompProfile:
+        type: RuntimeDefault
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      readOnlyRootFilesystem: true
+      privileged: false
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop: ["ALL"]
+      seccompProfile:
+        type: RuntimeDefault
+
+    tools:
+      wait4x:
+        resources:
+          requests:
+            cpu: 10m
+            memory: 16Mi
+          limits:
+            memory: 64Mi
+
+    login:
+      enabled: true
+      resources:
+        requests:
+          cpu: 50m
+          memory: 128Mi
+        limits:
+          memory: 512Mi
+      env:
+        - name: OTEL_SERVICE_NAME
+          value: zitadel-login
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: http://k8s-monitoring-alloy-receiver.monitoring.svc.cluster.local:4318
+        - name: OTEL_EXPORTER_OTLP_PROTOCOL
+          value: http/protobuf
