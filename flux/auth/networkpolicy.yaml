@@ -1,0 +1,23 @@
+---
+# Tenant isolation. Denies ingress from OTHER tenant namespaces while allowing:
+#   - same-namespace pods (podSelector: {}), and
+#   - any non-tenant namespace (ingress controllers, the monitoring scrapers) via the
+#     DoesNotExist match on the tenant label.
+# Egress is left open so apps can reach external APIs (LLM providers, scrape targets);
+# tighten per app as needed. Cross-tenant traffic is blocked at the receiving side by
+# every tenant carrying this policy.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: tenant-isolation
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector: {}
+        - namespaceSelector:
+            matchExpressions:
+              - key: dantofa.dev/tenant
+                operator: DoesNotExist
