@@ -2,32 +2,44 @@
   "lockfile_version": "1",
   "packages": {
     "github:NixOS/nixpkgs/nixpkgs-unstable": {
-      "last_modified": "2026-10-16T02:15:57Z",
-      "resolved": "github:NixOS/nixpkgs/f20cd90e28fe0403873f473b29e42662cd86e8c4?lastModified=1792116957&narHash=sha256-EjZqHKObBfIOeHZnMRVV87HB3pPq%2FWBkmRJWyFxmZu8%3D"
+      "last_modified": "2026-11-22T18:15:35Z",
+      "resolved": "github:NixOS/nixpkgs/619c39f6eac5d1ed6b8f073a9414baf7034b2356?lastModified=1795371335&narHash=sha256-oa2P5WZer1A4wuhatl92JyHHEjrrOdIyuvTuI5LUi9Q%3D"
     },
     "github:dantofa/platform#cluster-just": {
-      "last_modified": "2026-10-20T21:36:43Z",
-      "resolved": "github:dantofa/platform/c5127c366fd87587a17620acea422035abec3c0e?lastModified=1792532203&narHash=sha256-J3vc8LWWL3Z28fUKQ%2Fa0z9rC1%2FHzsDGsajEPiyCNZF8%3D#cluster-just"
+      "last_modified": "2026-11-23T20:48:06Z",
+      "resolved": "github:dantofa/platform/cb1aaf2f538bf662ddb2e7aa56cfbaf8c1a8f62d?lastModified=1795466886&narHash=sha256-BKMCIu0YJEkEQsbzoXVi28nbCFEvBe%2Fks0Jgcrkbhh0%3D#cluster-just"
     },
     "github:dantofa/platform#cluster-toolchain": {
-      "last_modified": "2026-10-20T21:36:43Z",
-      "resolved": "github:dantofa/platform/c5127c366fd87587a17620acea422035abec3c0e?lastModified=1792532203&narHash=sha256-J3vc8LWWL3Z28fUKQ%2Fa0z9rC1%2FHzsDGsajEPiyCNZF8%3D#cluster-toolchain"
+      "last_modified": "2026-11-23T20:48:06Z",
+      "resolved": "github:dantofa/platform/cb1aaf2f538bf662ddb2e7aa56cfbaf8c1a8f62d?lastModified=1795466886&narHash=sha256-BKMCIu0YJEkEQsbzoXVi28nbCFEvBe%2Fks0Jgcrkbhh0%3D#cluster-toolchain"
     },
     "github:dantofa/platform#default": {
-      "last_modified": "2026-10-20T21:36:43Z",
-      "resolved": "github:dantofa/platform/c5127c366fd87587a17620acea422035abec3c0e?lastModified=1792532203&narHash=sha256-J3vc8LWWL3Z28fUKQ%2Fa0z9rC1%2FHzsDGsajEPiyCNZF8%3D#default"
+      "last_modified": "2026-11-23T20:48:06Z",
+      "resolved": "github:dantofa/platform/cb1aaf2f538bf662ddb2e7aa56cfbaf8c1a8f62d?lastModified=1795466886&narHash=sha256-BKMCIu0YJEkEQsbzoXVi28nbCFEvBe%2Fks0Jgcrkbhh0%3D#default"
+    },
+    "github:dantofa/platform#ensure-devbox-update": {
+      "last_modified": "2026-11-23T20:48:06Z",
+      "resolved": "github:dantofa/platform/cb1aaf2f538bf662ddb2e7aa56cfbaf8c1a8f62d?lastModified=1795466886&narHash=sha256-BKMCIu0YJEkEQsbzoXVi28nbCFEvBe%2Fks0Jgcrkbhh0%3D#ensure-devbox-update"
     },
     "github:dantofa/platform#ensure-justfile": {
-      "last_modified": "2026-10-20T21:36:43Z",
-      "resolved": "github:dantofa/platform/c5127c366fd87587a17620acea422035abec3c0e?lastModified=1792532203&narHash=sha256-J3vc8LWWL3Z28fUKQ%2Fa0z9rC1%2FHzsDGsajEPiyCNZF8%3D#ensure-justfile"
+      "last_modified": "2026-11-23T20:48:06Z",
+      "resolved": "github:dantofa/platform/cb1aaf2f538bf662ddb2e7aa56cfbaf8c1a8f62d?lastModified=1795466886&narHash=sha256-BKMCIu0YJEkEQsbzoXVi28nbCFEvBe%2Fks0Jgcrkbhh0%3D#ensure-justfile"
+    },
+    "github:dantofa/platform#ensure-preview": {
+      "last_modified": "2026-11-23T20:48:06Z",
+      "resolved": "github:dantofa/platform/cb1aaf2f538bf662ddb2e7aa56cfbaf8c1a8f62d?lastModified=1795466886&narHash=sha256-BKMCIu0YJEkEQsbzoXVi28nbCFEvBe%2Fks0Jgcrkbhh0%3D#ensure-preview"
+    },
+    "github:dantofa/platform#ensure-renovate": {
+      "last_modified": "2026-11-23T20:48:06Z",
+      "resolved": "github:dantofa/platform/cb1aaf2f538bf662ddb2e7aa56cfbaf8c1a8f62d?lastModified=1795466886&narHash=sha256-BKMCIu0YJEkEQsbzoXVi28nbCFEvBe%2Fks0Jgcrkbhh0%3D#ensure-renovate"
     },
     "github:dantofa/platform#skills": {
-      "last_modified": "2026-10-20T21:36:43Z",
-      "resolved": "github:dantofa/platform/c5127c366fd87587a17620acea422035abec3c0e?lastModified=1792532203&narHash=sha256-J3vc8LWWL3Z28fUKQ%2Fa0z9rC1%2FHzsDGsajEPiyCNZF8%3D#skills"
+      "last_modified": "2026-11-23T20:48:06Z",
+      "resolved": "github:dantofa/platform/cb1aaf2f538bf662ddb2e7aa56cfbaf8c1a8f62d?lastModified=1795466886&narHash=sha256-BKMCIu0YJEkEQsbzoXVi28nbCFEvBe%2Fks0Jgcrkbhh0%3D#skills"
     },
     "github:dantofa/platform#trivyignore-base": {
-      "last_modified": "2026-10-20T21:36:43Z",
-      "resolved": "github:dantofa/platform/c5127c366fd87587a17620acea422035abec3c0e?lastModified=1792532203&narHash=sha256-J3vc8LWWL3Z28fUKQ%2Fa0z9rC1%2FHzsDGsajEPiyCNZF8%3D#trivyignore-base"
+      "last_modified": "2026-11-23T20:48:06Z",
+      "resolved": "github:dantofa/platform/cb1aaf2f538bf662ddb2e7aa56cfbaf8c1a8f62d?lastModified=1795466886&narHash=sha256-BKMCIu0YJEkEQsbzoXVi28nbCFEvBe%2Fks0Jgcrkbhh0%3D#trivyignore-base"
     }
   }
 }
