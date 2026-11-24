@@ -1,0 +1,16 @@
+---
+# Caps total resource consumption for the tenant so one app can't starve the node
+# pool. Starter values — tune per app. Because requests/limits are quota-tracked,
+# the require-resources policy (and the LimitRange defaults) keep every pod countable.
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: tenant-quota
+spec:
+  hard:
+    requests.cpu: "2"
+    requests.memory: 4Gi
+    limits.cpu: "4"
+    limits.memory: 8Gi
+    pods: "50"
+    persistentvolumeclaims: "10"

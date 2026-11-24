@@ -1,0 +1,5 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  // Platform bumps (dantofa/platform) arrive as PRs via this preset.
+  extends: ["config:recommended", "github>dantofa/platform//.github/renovate/preset"],
+}

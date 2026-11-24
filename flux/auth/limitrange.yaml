@@ -1,0 +1,20 @@
+---
+# Per-container defaults + ceiling. `default`/`defaultRequest` mean pods that omit
+# resources still get requests+limits (satisfying the require-resources policy);
+# `max` bounds any single container. Tune per app.
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: tenant-limits
+spec:
+  limits:
+    - type: Container
+      default:
+        cpu: 200m
+        memory: 256Mi
+      defaultRequest:
+        cpu: 50m
+        memory: 64Mi
+      max:
+        cpu: "2"
+        memory: 2Gi

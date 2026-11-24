@@ -1,0 +1,37 @@
+---
+# Zitadel on its own host, auth.${base_domain}, rather than a path on the
+# base_domain: Zitadel derives every issuer/redirect URL from ExternalDomain and
+# serves its API, console and OIDC endpoints from the host root, so it cannot sit
+# under a path prefix.
+#
+# When base_domain is below the zone apex (e.g. a PR preview's
+# auth-pr42.preview.dantofa.dev), the platform's bootstrap orders the Cloudflare
+# edge certificate covering *.${base_domain}; locally the cluster's CA covers it.
+#
+# No ingressClassName (the cluster default routes it) and no tls: block (the
+# controller serves the default cert). The zitadel Service carries the chart's
+# Traefik h2c annotation so gRPC reaches the backend over HTTP/2.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: zitadel
+spec:
+  rules:
+    - host: auth.${base_domain}
+      http:
+        paths:
+          # The v2 login UI is a separate Next.js app.
+          - path: /ui/v2/login
+            pathType: Prefix
+            backend:
+              service:
+                name: zitadel-login
+                port:
+                  number: 3000
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: zitadel
+                port:
+                  number: 8080

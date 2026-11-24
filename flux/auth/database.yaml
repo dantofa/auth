@@ -1,0 +1,56 @@
+---
+# Zitadel's Postgres, run by the platform's CloudNativePG operator. CNPG creates the
+# `zitadel` database owned by the `zitadel` role and publishes its credentials in
+# the zitadel-db-app Secret, so Zitadel's init job only creates its own schema
+# (initJob.command: zitadel) and never needs superuser access.
+#
+# WAL archiving goes to the platform-generated `db-backup` ObjectStore (created in
+# this namespace when this Cluster appears; the first archive attempts may fail and
+# retry until it lands). This database is excluded from Velero by policy -- the WAL
+# archive + ScheduledBackup below are its only backup.
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: zitadel-db
+spec:
+  # Single instance keeps local/preview cheap; raise to 3 for production HA.
+  instances: 1
+  # Exact pin (immutable dated tag). Declaring a Cluster means owning this image's
+  # CVEs: add any CRITICALs to .trivyignore-cluster with a reason.
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.11-202609281634-standard-trixie
+  bootstrap:
+    initdb:
+      database: zitadel
+      owner: zitadel
+  storage:
+    size: 5Gi
+    storageClass: ${storage_class}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 1Gi
+  monitoring:
+    enablePodMonitor: true
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: db-backup
+---
+# WAL alone cannot be replayed without a base backup to start from: take one
+# immediately and then daily.
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: zitadel-db-daily
+spec:
+  schedule: "0 0 3 * * *"
+  immediate: true
+  backupOwnerReference: self
+  cluster:
+    name: zitadel-db
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io

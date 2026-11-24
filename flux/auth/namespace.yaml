@@ -1,0 +1,10 @@
+---
+# The dantofa.dev/tenant label opts the namespace into the platform's Kyverno
+# baseline (restricted PSS, required resources, no :latest) and the tenant
+# NetworkPolicy model.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: auth
+  labels:
+    dantofa.dev/tenant: auth
